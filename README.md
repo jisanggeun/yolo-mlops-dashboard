@@ -16,7 +16,7 @@
 ---
 
 ## ✨ System Architecture
-
+![yolo-architecture](https://github.com/user-attachments/assets/75efe8d5-1b19-4c03-bd6b-73457c68c048)
 
 ---
 
