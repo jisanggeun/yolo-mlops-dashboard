@@ -2,7 +2,6 @@
 
 ## 📁 Structure
 ```
-
 backend/
 ├── app/
 │   ├── main.py          # FastAPI APP 진입 포인트
@@ -32,3 +31,4 @@ uvicorn app.main:app --reload
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | /api/register | 회원가입 |
+| POST | /api/login | 로그인 |
