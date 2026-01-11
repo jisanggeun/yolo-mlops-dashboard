@@ -1,9 +1,14 @@
 from pydantic_settings import BaseSettings
 
+# 환경 설정 class
 class Settings(BaseSettings):
-    DATABASE_URL: str="mysql+pymysql://user:password@localhost:3306/yolo_mlops"
+    DATABASE_URL: str="mysql+pymysql://user:password@localhost:3306/yolo_mlops" # DB 연결 주소 (기본 값 설정)
+    SECRET_KEY: str="TEST_SECRET_KEY" # JWT 비밀 키
+    ALGORITHM: str="HS256" # Hash + SHA256 (JWT)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int=30 # Token 만료 시간 30분
 
     class Config:
-        env_file = ".env"
+        env_file = ".env" # .env 파일에서 환경변수 가져 옴
 
+# 설정 객체 생성 (다른 파일에서 import해서 사용하기 때문)
 settings = Settings()

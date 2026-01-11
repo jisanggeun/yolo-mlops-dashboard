@@ -7,3 +7,4 @@ pymysql
 email-validator
 passlib[bcrypt]
 cryptography
+python-jose[cryptography]
