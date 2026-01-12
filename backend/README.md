@@ -8,13 +8,16 @@ backend/
 │   ├── config.py        # 환경 설정
 │   ├── database.py      # DB 연결
 │   ├── api/
-│   │   └── auth.py      # 인증 API
+│   │   ├── auth.py      # 인증 API
+│   │   └── jobs.py      # 학습 작업 API
 │   ├── models/
-│   │   └── user.py      # User 테이블
+│   │   ├── user.py      # User 테이블
+│   │   └── job.py       # Job 테이블
 │   ├── schemas/
-│   │   └── user.py      # Request/Response Schema
+│   │   ├── user.py      # User 스키마
+│   │   └── job.py       # Job 스키마
 │   └── services/
-│       └── auth.py      # 비밀번호 Hashing
+│       └── auth.py      # 비밀번호 Hashing, JWT
 ├── requirements.txt
 └── .env
 ```
