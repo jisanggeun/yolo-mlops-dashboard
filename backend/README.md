@@ -9,13 +9,15 @@ backend/
 │   ├── database.py      # DB 연결
 │   ├── api/
 │   │   ├── auth.py      # 인증 API
-│   │   └── jobs.py      # 학습 작업 API
+│   │   ├── jobs.py      # 학습 작업 API
+│   │   └── predict.py   # 예측 API
 │   ├── models/
 │   │   ├── user.py      # User 테이블
 │   │   └── job.py       # Job 테이블
 │   ├── schemas/
 │   │   ├── user.py      # User 스키마
-│   │   └── job.py       # Job 스키마
+│   │   ├── job.py       # Job 스키마
+│   │   └── predict.py   # Predict 스키마
 │   └── services/
 │       └── auth.py      # 비밀번호 Hashing, JWT
 ├── requirements.txt
@@ -38,5 +40,6 @@ uvicorn app.main:app --reload
 | POST | /api/jobs | 학습 작업 생성 |
 | GET | /api/jobs | 학습 작업 목록 조회 |
 | GET | /api/jobs/{job_id} | 학습 작업 상세 조회 |
+| POST | /api/predict | 이미지 예측 |
 
 자세한 API 문서: http://localhost:8000/docs
