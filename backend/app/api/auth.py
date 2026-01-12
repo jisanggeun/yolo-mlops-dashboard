@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
@@ -29,14 +30,14 @@ def register(user: UserCreate, db: Session=Depends(get_db)):
 
 # 로그인
 @router.post("/login", response_model=Token)
-def login(user: UserLogin, db: Session=Depends(get_db)):
+def login(form_data: OAuth2PasswordRequestForm=Depends(), db: Session=Depends(get_db)):
     # 해당하는 유저 찾기
-    db_user = db.query(User).filter(User.email == user.email).first()
+    db_user = db.query(User).filter(User.email == form_data.username).first()
     if not db_user: 
         raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 틀렸습니다.")
     
     # 비밀번호 검증
-    if not verify_password(user.password, db_user.password):
+    if not verify_password(form_data.password, db_user.password):
         raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 틀렸습니다.")
     
     # Token 생성 / JWT 표준 규칙 (sub: 토큰 주인, exp: 만료 시간, iat: 발급 시간)

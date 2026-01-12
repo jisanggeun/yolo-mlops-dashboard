@@ -1,10 +1,15 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
-from jose import jwt
+from jose import jwt, JWTError
+from fastapi import HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 from app.config import settings
 
 # 비밀번호 해싱 설정
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# request header에서 token 자동 추출
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
 # 비밀번호 해싱 (회원가입 시 사용)
 def hash_password(password: str) -> str:
@@ -21,3 +26,14 @@ def create_access_token(data: dict) -> str:
 	expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 	to_encode.update({"exp": expire}) # 로그인 만료 시간을 원본 데이터에 추가
 	return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM) # HS256 방식으로 해싱
+
+# JWT Token 복호화 후 이메일 추출
+def get_current_user(token: str=Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        email = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+        return email
+    except JWTError:
+        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
