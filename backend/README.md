@@ -32,3 +32,8 @@ uvicorn app.main:app --reload
 |--------|----------|-------------|
 | POST | /api/register | 회원가입 |
 | POST | /api/login | 로그인 |
+| POST | /api/jobs | 학습 작업 생성 |
+| GET | /api/jobs | 학습 작업 목록 조회 |
+| GET | /api/jobs/{job_id} | 학습 작업 상세 조회 |
+
+자세한 API 문서: http://localhost:8000/docs
