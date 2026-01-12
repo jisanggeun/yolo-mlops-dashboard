@@ -9,7 +9,7 @@ router = APIRouter()
 
 # 회원가입
 @router.post("/register", response_model=UserResponse)
-def register(user: UserCreate, db: Session = Depends(get_db)):
+def register(user: UserCreate, db: Session=Depends(get_db)):
     if user.password != user.check_password:
         raise HTTPException(status_code=400, detail="비밀번호가 일치하지 않습니다.")
     
