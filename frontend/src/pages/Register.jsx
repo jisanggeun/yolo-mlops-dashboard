@@ -12,6 +12,17 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // 검증
+        if(!email || !password || !checkPassword) {
+            setMessage("모든 필드를 입력해주세요.")
+            return;
+        }
+
+        if(password !== checkPassword) {
+            setMessage("비밀번호가 일치하지 않습니다.")
+            return;
+        }
+
         // 백엔드 회원가입 API response
         try {
             await register(email, password, checkPassword);
