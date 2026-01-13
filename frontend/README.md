@@ -8,6 +8,8 @@ frontend/
 │   │   ├── auth.js        # Auth API
 │   │   ├── jobs.js        # Jobs API
 │   │   └── predict.js     # Predict API
+│   ├── components/
+│   │   └── Navbar.jsx     # Navigation Bar
 │   ├── pages/
 │   │   ├── Register.jsx   # Register Page
 │   │   ├── Login.jsx      # Login Page
@@ -15,6 +17,7 @@ frontend/
 │   │   └── Predict.jsx    # Predict Page
 │   ├── App.js
 │   └── index.js
+│   └── index.css          # Global Styles
 ├── public/
 └── package.json
 ```
@@ -28,6 +31,7 @@ npm start
 ## 📡 Pages
 | Page | Path | Description |
 |------|------|-------------|
+| Home | / | Dashboard Home |
 | Register | /register | Register Form |
 | Login | /login | Login Form |
 | Jobs | /jobs | Training Job Management |
