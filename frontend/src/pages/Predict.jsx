@@ -33,30 +33,34 @@ function Predict() {
     };
 
     return (
-        <div>
-            <h1>이미지 예측</h1>
-            <form onSubmit={handleSubmit}>
-                <input 
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setFile(e.target.files[0])}
-                /> {/* --> 첫 번째 파일 저장 */}
-                <button type="submit">예측하기</button>
-            </form>
-            {message && <p>{message}</p>}
-
+        <div className="main">
+            <div className="card">
+                <h2 className="card-title">이미지 예측</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="file-upload">
+                        <p>📁 이미지를 선택하세요.</p>
+                        <input 
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setFile(e.target.files[0])}
+                        />
+                    </div>
+                    <button type="submit">예측하기</button>
+                </form>
+                {message && <p className="message">{message}</p>}
+            </div>
             {result && (
-                <div>
-                    <h2>결과</h2>
-                    <p>파일명: {result.filename}</p>
-                    <ul>
+                <div classsName="card">
+                    <h2 className="card-title">예측 결과</h2>
+                    <div className="result-card">
+                        <p><strong>파일명:</strong> {result.filename}</p>
                         {result.predictions.map((pred, index) => (
-                            <li key={index}>
-                                {pred.class} - {(pred.confidence * 100).toFixed(1)}% 
-                                {/* 예측 클래스 - conf_score * 100 %(소수점 둘째 자리에서 반올림) */}
-                            </li>
+                            <div key={index} className="result-item">
+                                <span>{pred.class}</span>
+                                <span className="confidence">{(pred.confidence * 100).toFixed(1)}%</span>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             )}
         </div>

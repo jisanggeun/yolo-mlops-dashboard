@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../api/auth";
 
 function Login() {
@@ -6,6 +7,8 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    
+    const navigate = useNavigate();
 
     // form 제출 시 실행
     const handleSubmit = async (e) => {
@@ -22,7 +25,7 @@ function Login() {
 
             // JWT token 저장 
             localStorage.setItem("token", data.access_token);
-            setMessage("로그인 성공");
+            navigate("/"); // 로그인 성공 시 home page로 이동
         } catch (error) {
             const detail = error.response?.data?.detail;
             if(typeof detail === "string") {
@@ -36,7 +39,7 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className="auth-card">
             <h1>로그인</h1>
             <form onSubmit={handleSubmit}>
                 <input 
@@ -53,7 +56,7 @@ function Login() {
                 />
                 <button type="submit">로그인</button>
             </form>
-            {message && <p>{message}</p>}
+            {message && <p className="message">{message}</p>}
         </div>
     );
 }

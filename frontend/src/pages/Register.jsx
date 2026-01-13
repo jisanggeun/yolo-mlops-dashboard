@@ -35,7 +35,7 @@ function Register() {
     };
 
     return (
-        <div>
+        <div className="auth-card">
             <h1>회원가입</h1>
             {/* form 제출 시 handleSubmit 실행 */}
             <form onSubmit={handleSubmit}>
@@ -63,7 +63,7 @@ function Register() {
                 <button type="submit">가입하기</button>
             </form>
             {/* 메세지 있으면 표시 */}
-            {message && <p>{message}</p>}
+            {message && <p className="message">{message}</p>}
         </div>
     );
 } 

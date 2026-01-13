@@ -1,13 +1,233 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 모든 element 기본 값 초기화 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box; /* padding 포함한 크기 계산 */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* 전체 page 기본 style */
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f5f5f5;
+	min-height: 100vh;
+}
+
+/* navigation bar */
+nav {
+	display: flex; /* 가로 정렬 */
+	justify-content: space-between; /* 양 끝 배치 */
+	align-items: center; /* 세로 중앙 */
+	padding: 15px 30px;
+	background-color: #1a1a2e; /* 진한 남색 */
+}
+
+/* navigation link */
+nav a {
+	color: white;
+	text-decoration: none; /* 밑줄 제거 */
+	padding: 8px 16px;
+	border-radius: 5px; /* 둥근 모서리 */
+}
+
+/* logo class */
+nav .logo {
+	font-size: 24px;
+	font-weight: bold;
+	color: #4fc3f7; /* 하늘색 */
+}
+
+nav a.active {
+  font-weight: bold;
+  border-bottom: 2px solid #4fc3f7;
+}
+
+/* navigation 오른쪽 menu 묶음 */
+nav div {
+	display: flex; 
+	gap: 20px; 
+	align-items: center; 
+}
+
+/* logout button */
+nav button {
+	background-color: #e74c3c; /* 빨간색 */
+	border: none;
+	color: white;
+	padding: 8px 16px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+/* main container */
+.main {
+	padding: 40px;
+	max-width: 1200px; /* 최대 너비 */
+	margin:0 auto; /* 가운데 정렬 */
+}
+
+/* home page title */
+.home-title {
+	text-align: center;
+	font-size: 48px;
+	color: #1a1a2e;
+	margin-bottom: 20px;
+}
+
+/* home page subtitle */
+.home-subtitle {
+	text-align: center;
+	font-size: 18px;
+	color: #666; /* 회색 */
+	margin-bottom: 40px;
+}
+
+/* card (흰색 박스) */
+.card {
+	background-color: white;
+	border-radius: 10px;
+	padding: 30px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
+	margin-bottom: 30px;
+}
+
+/* card title */
+.card-title {
+	font-size: 24px;
+	color: #1a1a2e;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #4fc3f7; /* 하늘색 밑줄 */
+	padding-bottom: 10px;
+}
+
+/* form (input 필드 묶음) */
+.form-group {
+	display: flex; 
+	gap: 20px; /* 간격 */
+	align-items: center; 
+	flex-wrap: wrap; /* 넘치면 줄바꿈 */
+}
+
+/* input 필드 */
+input {
+	padding: 12px 15px;
+	border: 1px solid #ddd; /* 연한 테두리 */
+	border-radius: 5px;
+	font-size: 16px;
+}
+
+/* button */
+button {
+	background-color: #4fc3f7; /* 하늘색 */
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 5px;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+/* login/register card */
+.auth-card {
+	max-width: 400px; /* 최대너비 */
+	margin: 100px auto; /* 상단 여백 + 가운데 정렬 */
+	background-color: white;
+	border-radius: 10px;
+	padding: 40px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* login/register title */
+.auth-card h1 {
+	text-align: center;
+	font-size: 28px;
+	color: #1a1a2e;
+	margin-bottom: 30px;
+}
+
+/* login/register input 필드 */
+.auth-card input {
+	width: 100%; /* 전체 너비 */
+	margin-bottom: 15px;
+}
+
+/* login/register button */
+.auth-card button {
+	width: 100%;
+}
+
+/* table */
+table {
+	width: 100%;
+	border-collapse: collapse; /* 테두리 겹침 */
+}
+
+/* table header */
+th {
+	background-color: #1a1a2e; /* 진한 남색 */
+	color: white;
+	padding: 12px;
+	text-align: left;
+}
+
+/* table cell */
+td {
+	padding: 12px;
+	border-bottom: 1px solid #ddd;
+}
+
+/* status badge - pending */
+.status-pending {
+	background-color: #fff3cd; /* 노란색 */
+	color: #856404;
+	padding: 5px 10px;
+	border-radius: 15px;
+	font-size: 12px;
+}
+
+/* status badge - completed */
+.status-completed {
+	background-color: #d4edda; /* 초록색 */
+	color: #155724;
+	padding: 5px 10px;
+	border-radius: 15px;
+	font-size: 12px;
+}
+
+/* file upload */
+.file-upload {
+	border: 2px dashed #ddd; /* 점선 테두리 */
+	border-radius: 10px;
+	padding: 40px;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+/* result card */
+.result-card {
+	background-color: #f8f9fa; /* 연한 회색 */
+	border-radius: 10px;
+	padding: 20px;
+}
+
+/* result item */
+.result-item {
+	display: flex;
+	justify-content: space-between; /* 양 끝 배치 */
+	padding: 10px 0;
+	border-bottom: 1px solid #eee;
+}
+
+/* confidence score */
+.confidence {
+	color: #27ae60; /* 초록색 */
+	font-weight: bold;
+}
+
+/* message */
+.message {
+	padding: 10px;
+	margin-top: 15px;
+	border-radius: 5px;
+	background-color: #e8f4f8; /* 연한 파란색 */
+	color: #1a1a2e;
 }
