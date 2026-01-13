@@ -5,10 +5,12 @@
 frontend/
 ├── src/
 │   ├── api/
-│   │   └── auth.js        # Auth API
+│   │   ├── auth.js        # Auth API
+│   │   └── jobs.js        # Jobs API
 │   ├── pages/
 │   │   ├── Register.jsx   # Register Page
-│   │   └── Login.jsx      # Login Page
+│   │   ├── Login.jsx      # Login Page
+│   │   └── Jobs.jsx       # Jobs Page
 │   ├── App.js
 │   └── index.js
 ├── public/
@@ -26,3 +28,4 @@ npm start
 |------|------|-------------|
 | Register | /register | Register Form |
 | Login | /login | Login Form |
+| Jobs | /jobs | Training Job Management |
