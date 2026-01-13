@@ -7,7 +7,8 @@ frontend/
 │   ├── api/
 │   │   └── auth.js        # Auth API
 │   ├── pages/
-│   │   └── Register.jsx   # Register Page
+│   │   ├── Register.jsx   # Register Page
+│   │   └── Login.jsx      # Login Page
 │   ├── App.js
 │   └── index.js
 ├── public/
@@ -24,3 +25,4 @@ npm start
 | Page | Path | Description |
 |------|------|-------------|
 | Register | /register | Register Form |
+| Login | /login | Login Form |
