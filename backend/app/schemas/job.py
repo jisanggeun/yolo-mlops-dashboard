@@ -13,6 +13,7 @@ class JobResponse(BaseModel):
     status: str
     epochs: int
     batch_size: int
+    progress: float
     created_at: datetime
 
     class Config:

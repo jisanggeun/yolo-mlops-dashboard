@@ -10,3 +10,5 @@ cryptography
 python-jose[cryptography]
 python-multipart
 ultralytics
+pillow
+scikit-learn

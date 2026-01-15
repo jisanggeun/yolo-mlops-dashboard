@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from datetime import datetime, timezone
 from app.database import Base
 
@@ -11,4 +11,5 @@ class Job(Base):
     status = Column(String(20), default="pending") # status flow: pending -> running -> completed or failed 
     epochs = Column(Integer, default=100) # training epochs
     batch_size = Column(Integer, default=16)
+    progress = Column(Float, default=0.0) # 진행도 (0 ~ 100)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
