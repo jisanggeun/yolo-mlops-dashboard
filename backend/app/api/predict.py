@@ -4,8 +4,10 @@ from app.schemas.predict import PredictResponse
 from app.services.auth import get_current_user
 from ultralytics import YOLO
 from datetime import datetime
+from urllib.parse import unquote
 import shutil
 import os
+import json
 
 router = APIRouter()
 
@@ -16,8 +18,9 @@ model = YOLO("yolov8n.pt")
 @router.post("/predict", response_model=PredictResponse)
 async def predict(file: UploadFile=File(...), email: str=Depends(get_current_user)):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    visualize_filename = f"visualize_{file.filename}"
     # 임시 file 저장
-    temp_path = f"temp_{file.filename}"
+    temp_path = visualize_filename
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
@@ -34,14 +37,27 @@ async def predict(file: UploadFile=File(...), email: str=Depends(get_current_use
                 "bbox": box.xyxy[0].tolist()
             })
 
+    # 원본 file 저장
+    original_path = f"runs/{timestamp}/{file.filename}"
+    shutil.copy(temp_path, original_path)
+
     # 임시 file 삭제
     os.remove(temp_path)
+
+    # predictions JSON 저장
+    json_path = f"runs/{timestamp}/result.json"
+    with open(json_path, "w") as f:
+        json.dump({
+            "filename": file.filename,
+            "visualize_filename": visualize_filename,
+            "predictions": predictions
+        }, f)
 
     return {
         "filename": file.filename,
         "predictions": predictions,
         "message": "예측 완료",
-        "image_path": f"/api/predict/image/{timestamp}/{file.filename}"    
+        "image_path": f"/api/predict/image/{timestamp}/{visualize_filename}"    
     }
 
 # 과거 예측 목록 조회
@@ -51,19 +67,25 @@ async def get_predict_history(email: str=Depends(get_current_user)):
     if os.path.exists("runs"):
         for timestamp in sorted(os.listdir("runs"), reverse=True):
             folder_path = f"runs/{timestamp}"
-            if os.path.isdir(folder_path):
-                for filename in os.listdir(folder_path):
-                    history.append({
-                        "timestamp": timestamp,
-                        "filename": filename,
-                        "image_path": f"/api/predict/image/{timestamp}/{filename}"
-                    })
+            json_path = f"{folder_path}/result.json"
+
+            if os.path.isdir(folder_path) and os.path.exists(json_path):
+                with open(json_path, "r") as f:
+                    data = json.load(f)
+                    
+                history.append({
+                    "timestamp": timestamp,
+                    "filename": data["filename"],
+                    "predictions": data["predictions"],
+                    "image_path": f"/api/predict/image/{timestamp}/{data['visualize_filename']}"
+                })
     return history
 
 # 시각화 이미지 반환
 @router.get("/predict/image/{timestamp}/{filename}")
 async def get_predict_image(timestamp: str, filename: str):
-    image_path = f"runs/{timestamp}/{filename}"
+    decoded_filename = unquote(filename)
+    image_path = f"runs/{timestamp}/{decoded_filename}"
     if os.path.exists(image_path):
         return FileResponse(image_path)
     return {

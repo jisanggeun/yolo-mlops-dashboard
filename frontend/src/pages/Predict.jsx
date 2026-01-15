@@ -8,7 +8,8 @@ function Predict() {
     const [result, setResult] = useState(null);
     const [showImage, setShowImage] = useState(false);
     const [history, setHistory] = useState([]);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedHistory, setSelectedHistory] = useState(null);
+    const [showHistoryImage, setShowHistoryImage] = useState(true);
 
     // page 로드 시 history 조회
     useEffect(() => {
@@ -44,8 +45,19 @@ function Predict() {
             const data = await predict(file);
             setResult(data);
             setMessage("예측 성공");
+            setShowImage(false);
+            fetchHistory();
         } catch (error) {
             setMessage(error.response?.data?.detail || "예측 실패");
+        }
+    };
+
+    const handleHistoryClick = (item) => {
+        if (selectedHistory?.timestamp === item.timestamp) {
+            setSelectedHistory(null);
+        } else {
+            setSelectedHistory(item);
+            setShowHistoryImage(true);
         }
     };
 
@@ -98,7 +110,7 @@ function Predict() {
                     )}
                 </div>
             )}
-            
+
             {history.length > 0 && (
                 <div className="card">
                     <h2 className="card-title">예측 히스토리</h2>
@@ -106,11 +118,11 @@ function Predict() {
                         {history.map((item, index) => (
                             <div
                                 key={index}
-                                onClick={() => setSelectedImage(selectedImage === item.image_path ? null : item.image_path)}
+                                onClick={() => handleHistoryClick(item)}
                                 style={{
                                     cursor: "pointer",
                                     padding: "10px",
-                                    border: selectedImage === item.image_path ? "2px solid #4fc3f7" : "1px solid #ddd",
+                                    border: selectedHistory?.timestamp === item.timestamp ? "2px solid #4fc3f7" : "1px solid #ddd",
                                     borderRadius: "5px"
                                 }}
                             >
@@ -119,14 +131,34 @@ function Predict() {
                             </div>
                         ))}
                     </div>
-                    {selectedImage && (
+                    {selectedHistory && (
                         <div style={{ marginTop: "20px" }}>
-                            <button onClick={() => setSelectedImage(null)}>닫기</button>
-                            <img
-                                src={`http://localhost:8000${selectedImage}`}
-                                alt="과거 예측"
-                                style={{ maxWidth: "100%", borderRadius: "10px", marginTop: "10px"}}
-                            />
+                            <div className="result-card">
+                                <p><strong>파일명:</strong> {selectedHistory.filename}</p>
+                                {selectedHistory.predictions.map((pred, index) => (
+                                    <div key={index} className="result-item">
+                                        <span>{pred.class}</span>
+                                        <span className="confidence">{(pred.confidence * 100).toFixed(1)}%</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button 
+                                onClick={() => setShowHistoryImage(!showHistoryImage)}
+                                style={{ marginTop: "20px" }}
+                            >
+                                {showHistoryImage ? "시각화 숨기기" : "시각화 보기"}
+                            </button>
+                            
+                            {showHistoryImage && (
+                                <div style={{ marginTop: "20px" }}>
+                                    <img
+                                        src={`http://localhost:8000${selectedHistory.image_path}`}
+                                        alt="과거 예측"
+                                        style={{ maxWidth: "100%", borderRadius: "10px" }}
+                                    />
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
