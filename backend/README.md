@@ -21,7 +21,8 @@ backend/
 │   └── services/
 │       └── auth.py      # 비밀번호 Hashing, JWT
 ├── requirements.txt
-└── .env
+├── .env
+└── README.md
 ```
 
 ## 🚀 실행
@@ -40,6 +41,8 @@ uvicorn app.main:app --reload
 | POST | /api/jobs | 학습 작업 생성 |
 | GET | /api/jobs | 학습 작업 목록 조회 |
 | GET | /api/jobs/{job_id} | 학습 작업 상세 조회 |
-| POST | /api/predict | 이미지 예측 |
+| POST | /api/predict | 이미지 예측 (YOLO) |
+| GET | /api/predict/history | 예측 히스토리 조회 |
+| GET | /api/predict/image/{timestamp}/{filename} |  예측 이미지 조회 |
 
 자세한 API 문서: http://localhost:8000/docs
