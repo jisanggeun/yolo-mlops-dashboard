@@ -16,4 +16,13 @@ export const predict = async (file) => {
         }
     });
     return response.data;
-}
+};
+
+// 과거 예측 목록 조회
+export const getPredictHistory = async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/predict/history`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};

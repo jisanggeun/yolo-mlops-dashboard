@@ -9,3 +9,4 @@ passlib[bcrypt]
 cryptography
 python-jose[cryptography]
 python-multipart
+ultralytics
