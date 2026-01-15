@@ -46,3 +46,8 @@ uvicorn app.main:app --reload
 | GET | /api/predict/image/{timestamp}/{filename} |  예측 이미지 조회 |
 
 자세한 API 문서: http://localhost:8000/docs
+
+## 📦 Dataset
+ExDark 데이터셋 사용 (야간 객체 탐지)
+- 다운로드: https://github.com/cs-chan/Exclusively-Dark-Image-Dataset
+- 변환: `python scripts/convert_exdark.py`
