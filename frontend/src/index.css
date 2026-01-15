@@ -193,6 +193,24 @@ td {
 	font-size: 12px;
 }
 
+/* status badge - running */
+.status-running {
+	background-color: #cce5ff;
+	color: #004085;
+	padding: 5px 10px;
+	border-radius: 15px;
+	font-size: 12px;
+}
+
+/* status badge - failed */
+.status-failed {
+	background-color: #f8d7da;
+	color: #721c24;
+	padding: 5px 10px;
+	border-radius: 15px;
+	font-size: 12px;
+}
+
 /* file upload */
 .file-upload {
 	border: 2px dashed #ddd; /* 점선 테두리 */
