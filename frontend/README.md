@@ -13,8 +13,8 @@ frontend/
 │   ├── pages/
 │   │   ├── Register.jsx   # Register Page
 │   │   ├── Login.jsx      # Login Page
-│   │   ├── Jobs.jsx       # Jobs Page
-│   │   └── Predict.jsx    # Predict Page
+│   │   ├── Jobs.jsx       # Jobs Page (Learning Progress)
+│   │   └── Predict.jsx    # Predict Page (Include History)
 │   ├── App.js
 │   └── index.js
 │   └── index.css          # Global Styles
@@ -34,5 +34,5 @@ npm start
 | Home | / | Dashboard Home |
 | Register | /register | Register Form |
 | Login | /login | Login Form |
-| Jobs | /jobs | Training Job Management |
-| Predict | /predict | Image Upload + Result |
+| Jobs | /jobs | Training Job Management (Real-time Progress) |
+| Predict | /predict | Image Predict + History |
