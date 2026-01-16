@@ -20,6 +20,8 @@ backend/
 │   │   └── predict.py   # Predict 스키마
 │   └── services/
 │       └── auth.py      # 비밀번호 Hashing, JWT
+├── scripts/
+│   └── convert_exdark.py # YOLO 형식 변환 
 ├── requirements.txt
 ├── .env
 └── README.md
