@@ -11,10 +11,10 @@ frontend/
 │   ├── components/
 │   │   └── Navbar.jsx     # Navigation Bar
 │   ├── pages/
-│   │   ├── Register.jsx   # Register Page
-│   │   ├── Login.jsx      # Login Page
-│   │   ├── Jobs.jsx       # Jobs Page (Learning Progress)
-│   │   └── Predict.jsx    # Predict Page (Include History)
+│   │   ├── Register.jsx   # Register 페이지
+│   │   ├── Login.jsx      # Login 페이지
+│   │   ├── Jobs.jsx       # Jobs 페이지 (실시간 진행도)
+│   │   └── Predict.jsx    # Predict 페이지 (모델 선택, 히스토리)
 │   ├── App.js
 │   └── index.js
 │   └── index.css          # Global Styles
@@ -31,8 +31,8 @@ npm start
 ## 📡 Pages
 | Page | Path | Description |
 |------|------|-------------|
-| Home | / | Dashboard Home |
-| Register | /register | Register Form |
-| Login | /login | Login Form |
-| Jobs | /jobs | Training Job Management (Real-time Progress) |
-| Predict | /predict | Image Predict + History |
+| Home | / | 대시보드 홈 |
+| Register | /register | 회원가입 |
+| Login | /login | 로그인 |
+| Jobs | /jobs | 학습 작업 관리 (실시간 진행도) |
+| Predict | /predict | 이미지 예측 (모델 선택, 히스토리) |
