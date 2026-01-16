@@ -8,9 +8,10 @@ backend/
 │   ├── config.py        # 환경 설정
 │   ├── database.py      # DB 연결
 │   ├── api/
-│   │   ├── auth.py      # 인증 API
-│   │   ├── jobs.py      # 학습 작업 API
-│   │   └── predict.py   # 예측 API
+│   │   ├── auth.py        # 인증 API
+│   │   ├── jobs.py        # 학습 API
+│   │   ├── predict.py     # 예측 API
+│   │   └── monitor.py     # 모니터링 API
 │   ├── models/
 │   │   ├── user.py      # User 테이블
 │   │   └── job.py       # Job 테이블
@@ -50,6 +51,7 @@ uvicorn app.main:app --reload
 | GET | /api/predict/models | 모델 목록 조회 |
 | GET | /api/predict/history | 예측 히스토리 조회 |
 | GET | /api/predict/image/{timestamp}/{filename} |  예측 이미지 조회 |
+| GET | /api/monitor | 시스템 모니터링 (CPU, Memory, GPU) |
 
 자세한 API 문서: http://localhost:8000/docs
 
