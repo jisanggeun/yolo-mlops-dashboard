@@ -97,6 +97,7 @@ function Navbar() {
                     <>
                         <Link to="/jobs" className={location.pathname === "/jobs" ? "active" : ""}>학습</Link>
                         <Link to="/predict" className={location.pathname === "/predict" ? "active" : ""}>예측</Link>
+                        <Link to="/monitor" className={location.pathname === "/monitor" ? "active" : ""}>모니터링</Link>
                         {tokenInfo && (
                             <span style={{ color: "#aaa", fontSize: "12px", marginRight: "10px" }}>
                                 {remainingTime.minutes}분 {remainingTime.seconds}초 남음

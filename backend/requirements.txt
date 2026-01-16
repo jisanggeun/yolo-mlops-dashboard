@@ -12,3 +12,5 @@ python-multipart
 ultralytics
 pillow
 scikit-learn
+psutil
+gputil
