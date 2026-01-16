@@ -40,10 +40,14 @@ uvicorn app.main:app --reload
 |--------|----------|-------------|
 | POST | /api/register | 회원가입 |
 | POST | /api/login | 로그인 |
+| GET | /api/token/verify | 토큰 유효성 확인 |
+| GET | /api/token/info | 토큰 정보 (남은 시간) |
+| POST | /api/token/refresh | 토큰 갱신 |
 | POST | /api/jobs | 학습 작업 생성 |
 | GET | /api/jobs | 학습 작업 목록 조회 |
 | GET | /api/jobs/{job_id} | 학습 작업 상세 조회 |
 | POST | /api/predict | 이미지 예측 (YOLO) |
+| GET | /api/predict/models | 모델 목록 조회 |
 | GET | /api/predict/history | 예측 히스토리 조회 |
 | GET | /api/predict/image/{timestamp}/{filename} |  예측 이미지 조회 |
 
