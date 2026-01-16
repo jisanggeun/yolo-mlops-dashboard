@@ -111,6 +111,16 @@ async def get_predict_history(email: str=Depends(get_current_user)):
 async def get_predict_image(timestamp: str, filename: str):
     decoded_filename = unquote(filename)
     image_path = f"runs/{timestamp}/{decoded_filename}"
+
+    # 파일 없으면 확장자 변환 시도
+    if not os.path.exists(image_path):
+        # .jpeg -> .jpg
+        if decoded_filename.endswith(".jpeg"):
+            image_path = f"runs/{timestamp}/{decoded_filename.replace('.jpeg', '.jpg')}"
+        # .jpg -> .jpeg
+        elif decoded_filename.endswith(".jpg"):
+            image_path = f"runs/{timestamp}/{decoded_filename.replace('.jpg', '.jpeg')}"
+
     if os.path.exists(image_path):
         return FileResponse(image_path)
     return {
