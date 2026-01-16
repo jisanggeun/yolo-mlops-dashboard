@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, UploadFile, File, Depends, Query
 from fastapi.responses import FileResponse
 from app.schemas.predict import PredictResponse
 from app.services.auth import get_current_user
@@ -11,12 +11,31 @@ import json
 
 router = APIRouter()
 
-# YOLO model 로드 (서버 시작 시 1번만)
-model = YOLO("yolov8n.pt")
+# Model load
+@router.get("/predict/models") 
+async def get_models(email: str=Depends(get_current_user)):
+    # 사용 가능한 모델 목록 조회
+    models = [{"name": "pretrained", "path": "yolov8n.pt"}]
+
+    # 학습된 모델 검색
+    train_dir = "runs/train"
+    if os.path.exists(train_dir):
+        for job_name in sorted(os.listdir(train_dir)):
+            weight_path = f"{train_dir}/{job_name}/weights/best.pt"
+            if os.path.exists(weight_path):
+                models.append({
+                    "name": job_name,
+                    "path": weight_path
+                })
+    return models
 
 # Predict API (임시)
 @router.post("/predict", response_model=PredictResponse)
-async def predict(file: UploadFile=File(...), email: str=Depends(get_current_user)):
+async def predict(
+    file: UploadFile=File(...), 
+    model_name: str=Query("pretrained"),
+    email: str=Depends(get_current_user)
+):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     visualize_filename = f"visualize_{file.filename}"
     # 임시 file 저장
@@ -24,7 +43,13 @@ async def predict(file: UploadFile=File(...), email: str=Depends(get_current_use
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # YOLO Predict
+    # select model
+    if model_name == "pretrained":
+        model_path = "yolov8n.pt"
+    else:
+        model_path = f"runs/train/{model_name}/weights/best.pt"
+
+    model = YOLO(model_path)
     results = model(temp_path, conf=0.7, iou=0.5, save=True, project="runs", name=timestamp, exist_ok=True)
 
     # 결과 파싱

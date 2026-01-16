@@ -6,6 +6,7 @@ from app.schemas.job import JobCreate, JobResponse
 from app.services.auth import get_current_user
 from ultralytics import YOLO
 import threading
+import os
 
 router = APIRouter()
 
@@ -25,6 +26,9 @@ def train_model(job_id: int, epochs: int, batch_size: int, db_url: str):
         job.progress = 0.0
         db.commit()
 
+        # 학습 저장 경로 (backend/runs/train)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        TRAIN_DIR = os.path.join(BASE_DIR, "runs", "train")
         model = YOLO("yolov8n.pt")
 
         def on_train_epoch_end(trainer):
@@ -35,14 +39,15 @@ def train_model(job_id: int, epochs: int, batch_size: int, db_url: str):
             job = db.query(Job).filter(Job.id == job_id).first()
             job.progress = progress
             db.commit()
-
-        model.add_callback("on_train_epoch_end", on_train_epoch_end)
+        
+        # call back
+        model.add_callback("on_train_epoch_end", on_train_epoch_end) 
 
         model.train(
             data="datasets/exdark/yolo/exdark.yaml",
             epochs=epochs,
             batch=batch_size,
-            project="runs/train",
+            project=TRAIN_DIR,
             name=f"job_{job_id}",
             exist_ok=True
         )
