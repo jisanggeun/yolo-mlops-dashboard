@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { predict, getPredictHistory } from "../api/predict";
+import { predict, getPredictHistory, getModels } from "../api/predict";
 
 function Predict() {
     // 입력 값 저장
@@ -10,10 +10,13 @@ function Predict() {
     const [history, setHistory] = useState([]);
     const [selectedHistory, setSelectedHistory] = useState(null);
     const [showHistoryImage, setShowHistoryImage] = useState(true);
+    const [models, setModels] = useState([]);
+    const [selectedModel, setSelectedModel] = useState("pretrained");
 
-    // page 로드 시 history 조회
+    // page 로드 시 history, model 조회
     useEffect(() => {
         fetchHistory();
+        fetchModels();
     }, []);
 
     const fetchHistory = async () => {
@@ -22,6 +25,15 @@ function Predict() {
             setHistory(data);
         } catch (error) {
             setMessage("히스토리 조회 실패");
+        }
+    };
+
+    const fetchModels = async () => {
+        try {
+            const data = await getModels();
+            setModels(data);
+        } catch (error) {
+            setMessage("모델 목록 조회 실패");
         }
     };
 
@@ -66,6 +78,20 @@ function Predict() {
             <div className="card">
                 <h2 className="card-title">이미지 예측</h2>
                 <form onSubmit={handleSubmit}>
+                    <div className="form-group" style={{ marginBottom: "20px" }}>
+                        <label>모델 선택:</label>
+                        <select
+                            value={selectedModel}
+                            onChange={(e) => setSelectedModel(e.target.value)}
+                            style={{ padding: "12px 15px", borderRadius: "5px", border: "1px solid #ddd" }}
+                        >
+                            {models.map((model) => (
+                                <option key={model.name} value={model.name}>
+                                    {model.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                     <div className="file-upload">
                         <p>📁 이미지를 선택하세요.</p>
                         <input 
@@ -126,15 +152,18 @@ function Predict() {
                                     borderRadius: "5px"
                                 }}
                             >
-                            <p>{item.filename}</p>
-                            <p style={{ fontSize: "12px", color: "#666" }}>{item.timestamp}</p>
+                                <p>{item.filename}</p>
+                                <p style={{ fontSize: "12px", color: "#666" }}>{item.timestamp}</p>
+                                <p style={{ fontSize: "12px", color: "#4fc3f7" }}>{item.model}</p>
                             </div>
                         ))}
                     </div>
+
                     {selectedHistory && (
                         <div style={{ marginTop: "20px" }}>
                             <div className="result-card">
                                 <p><strong>파일명:</strong> {selectedHistory.filename}</p>
+                                <p><strong>모델:</strong> {selectedModel.model}</p>
                                 {selectedHistory.predictions.map((pred, index) => (
                                     <div key={index} className="result-item">
                                         <span>{pred.class}</span>
