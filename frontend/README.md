@@ -5,11 +5,11 @@
 frontend/
 ├── src/
 │   ├── api/
-│   │   ├── auth.js        # Auth API
+│   │   ├── auth.js        # Auth API (로그인, 토큰 관리)
 │   │   ├── jobs.js        # Jobs API
 │   │   └── predict.js     # Predict API
 │   ├── components/
-│   │   └── Navbar.jsx     # Navigation Bar
+│   │   └── Navbar.jsx     # Navigation Bar (토큰 카운트다운)
 │   ├── pages/
 │   │   ├── Register.jsx   # Register 페이지
 │   │   ├── Login.jsx      # Login 페이지
@@ -36,3 +36,10 @@ npm start
 | Login | /login | 로그인 |
 | Jobs | /jobs | 학습 작업 관리 (실시간 진행도) |
 | Predict | /predict | 이미지 예측 (모델 선택, 히스토리) |
+
+## 🔐 Token
+| Feature | Description |
+|------|------|
+| 남은 시간 표시 | 분/초 카운트다운 |
+| 자동 갱신 | 1분마다 토큰 확인 |
+| 수동 갱신 | 갱신 버튼 (10초 쿨타임) |
