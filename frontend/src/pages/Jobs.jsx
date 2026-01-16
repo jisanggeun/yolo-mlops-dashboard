@@ -105,7 +105,7 @@ function Jobs() {
                                         overflow: "hidden"
                                     }}>
                                         <div style={{
-                                            width: `${job.progress}`,
+                                            width: `${job.progress}%`,
                                             backgroundColor: "#4fc3f7",
                                             height: "20px",
                                             borderRadius: "5px",
