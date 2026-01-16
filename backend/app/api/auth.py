@@ -3,8 +3,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, UserLogin, Token
-from app.services.auth import hash_password, verify_password, create_access_token
+from app.schemas.user import UserCreate, UserResponse, Token
+from app.services.auth import hash_password, verify_password, create_access_token, get_current_user, get_token_info
 
 router = APIRouter()
 
@@ -44,3 +44,27 @@ def login(form_data: OAuth2PasswordRequestForm=Depends(), db: Session=Depends(ge
     access_token = create_access_token({"sub": db_user.email})
     
     return {"access_token": access_token, "token_type": "bearer"}
+
+# token 유효성 확인
+@router.get("/token/verify")
+def verify_token(email: str=Depends(get_current_user)):
+    return {
+        "valid": True,
+        "email": email
+    }
+
+# token info
+@router.get("/token/info")
+def token_info(info: dict=Depends(get_token_info)):
+    return info
+
+# token 갱신
+@router.post("/token/refresh", response_model=Token)
+def refresh_token(email: str=Depends(get_current_user)):
+    new_token = create_access_token(data={
+        "sub": email
+    })
+    return {
+        "access_token": new_token,
+        "token_type": "bearer"
+    }
