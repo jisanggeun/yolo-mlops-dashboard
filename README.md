@@ -40,3 +40,60 @@
 ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat&logo=prometheus&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white)
 ![Loki](https://img.shields.io/badge/Loki-F46800?style=flat&logo=grafana&logoColor=white)
+
+---
+
+## 📁 Structure
+```
+dashboard/
+├── backend/           # FastAPI 서버
+├── frontend/          # React 앱
+├── docker-compose.yml # Docker 설정
+└── README.md
+```
+
+---
+
+## 🚀 Run
+
+### Docker(권장)
+```bash
+docker-compose up --build
+```
+
+### Local
+
+**Backend:**
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm start
+```
+
+---
+
+## 🌐 Access
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| Backend | http://localhost:8000 |
+| API Docs | http://localhost:8000/docs |
+
+---
+
+## 🐳 Docker Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| frontend | 3000 | React 앱 |
+| backend | 8000 | FastAPI 서버 |
+| mysql | 3306 | 데이터베이스 |
+| redis | 6379 | 캐시/작업 큐 |
