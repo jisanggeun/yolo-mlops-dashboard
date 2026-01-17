@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+
+# Environments
+.env
+venv/
+
+# YOLO
+*.pt
+runs/
+datasets/
