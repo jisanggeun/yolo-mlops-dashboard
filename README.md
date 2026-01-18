@@ -52,6 +52,7 @@
 | GPU 지원 | Docker nvidia-container-toolkit |
 | JWT 인증 | Access Token + 자동 갱신 |
 | 모델 선택 | 학습된 모델로 예측 |
+| 모델 버전 관리 | MLflow + MinIO |
 
 ---
 
@@ -60,7 +61,9 @@
 dashboard/
 ├── backend/           # FastAPI 서버
 ├── frontend/          # React 앱
+├── mlflow/            # MLflow 설정
 ├── docker-compose.yml # Docker 설정
+├── .env               # 환경 변수
 └── README.md
 ```
 
@@ -98,6 +101,8 @@ npm start
 | Frontend | http://localhost:3000 |
 | Backend | http://localhost:8000 |
 | API Docs | http://localhost:8000/docs |
+| MLflow | http://localhost:5001 |
+| MinIO Console | http://localhost:9001 |
 
 ---
 
@@ -110,3 +115,5 @@ npm start
 | celery | - | 학습 작업 Worker (GPU) |
 | mysql | 3306 | 데이터베이스 |
 | redis | 6379 | 작업 큐 / Pub/Sub |
+| mlflow | 5001 | 모델 버전 관리 |
+| minio | 9000/9001 | Artifact 저장소 |

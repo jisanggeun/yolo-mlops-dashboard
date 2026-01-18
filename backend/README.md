@@ -10,7 +10,7 @@ backend/
 │   ├── celery_app.py    # Celery 설정
 │   ├── api/
 │   │   ├── auth.py        # 인증 API
-│   │   ├── jobs.py        # 학습 API
+│   │   ├── jobs.py        # 학습 API + WebSocket
 │   │   ├── predict.py     # 예측 API
 │   │   └── monitor.py     # 모니터링 API
 │   ├── models/
