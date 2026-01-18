@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createJob, getJobs } from "../api/jobs";
 
 function Jobs() {
@@ -7,14 +7,11 @@ function Jobs() {
     const [batchSize, setBatchSize] = useState('');
     const [message, setMessage] = useState("");
     const [jobs, setJobs] = useState([]);
+    const wsRef = useRef(null);
 
     // 페이지 로드 시 task list lookup
     useEffect(() => {
         fetchJobs();
-
-        // 3초마다 자동 새로고침 진행 (polling)
-        const interval = setInterval(fetchJobs, 3000);
-        return () => clearInterval(interval);
     }, []);
 
     // Task list look up
@@ -25,6 +22,35 @@ function Jobs() {
         } catch (error) {
             setMessage('작업 목록 조회 실패');
         }
+    };
+
+    // WebSocket connect
+    const connectWebSocket = (jobId) => {
+        const ws = new WebSocket(`ws://localhost:8000/api/ws/jobs/${jobId}`);
+        wsRef.current = ws;
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            // 해당 job 진행률 update
+            setJobs(prevJobs =>
+                prevJobs.map(job =>
+                    job.id === data.job_id
+                        ? {...job, progress: data.progress, status: data.status }
+                        : job
+                )
+            );
+            
+            // completed / failed 시 종료
+            if(data.status === "completed" || data.status === "failed") {
+                ws.close();
+            }
+        };
+        
+        // error 발생 
+        ws.onerror = () => {
+            setMessage("WebSocket 연결 실패");
+        };
     };
 
     // Training task create 
@@ -38,13 +64,25 @@ function Jobs() {
         }
 
         try {
-            await createJob(epochs, batchSize);
+            const newJob = await createJob(epochs, batchSize);
             setMessage("학습 작업 생성 성공");
-            fetchJobs(); // list 새로 고침
+            await fetchJobs(); // list 새로 고침
+            
+            // WebSocket connect
+            connectWebSocket(newJob.id);
         } catch (error) {
             setMessage(error.response?.data?.detail || "학습 작업 생성 실패");
         }
     };
+
+    // Component unmount 시 WebSocket 정리
+    useEffect(() => {
+        return () => {
+            if(wsRef.current) {
+                wsRef.current.close();
+            }
+        }
+    }, []);
 
     return (
         <div className="main">

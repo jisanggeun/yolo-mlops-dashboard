@@ -103,29 +103,6 @@ def main():
             label_name = new_name.rsplit(".", 1)[0] + ".txt"
             with open(f"{output_dir}/labels/{split}/{label_name}", "w") as f:
                 f.write("\n".join(yolo_labels))
-
-        # YAML 파일 생성
-    yaml_content = f"""path: {os.path.abspath(output_dir)}
-train: images/train
-val: images/val
-
-names:
-  0: Bicycle
-  1: Boat
-  2: Bottle
-  3: Bus
-  4: Car
-  5: Cat
-  6: Chair
-  7: Cup
-  8: Dog
-  9: Motorbike
-  10: People
-  11: Table
-"""
-
-    with open(f"{output_dir}/exdark.yaml", "w") as f:
-        f.write(yaml_content)
     
     print("변환 완료")
 

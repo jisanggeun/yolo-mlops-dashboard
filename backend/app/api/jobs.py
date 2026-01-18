@@ -1,72 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.job import Job
 from app.schemas.job import JobCreate, JobResponse
 from app.services.auth import get_current_user
-from ultralytics import YOLO
-import threading
+from app.tasks.train import train_model_task
+import redis
+import json
 import os
 
 router = APIRouter()
 
-# Training function (백그라운드 실행)
-def train_model(job_id: int, epochs: int, batch_size: int, db_url: str):
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-
-    engine = create_engine(db_url)
-    session_local = sessionmaker(bind=engine)
-    db = session_local()
-
-    try:
-        # update status (running)
-        job = db.query(Job).filter(Job.id == job_id).first()
-        job.status = "running"
-        job.progress = 0.0
-        db.commit()
-
-        # 학습 저장 경로 (backend/runs/train)
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        TRAIN_DIR = os.path.join(BASE_DIR, "runs", "train")
-        model = YOLO("yolov8n.pt")
-
-        def on_train_epoch_end(trainer):
-            current_epoch = trainer.epoch + 1
-            total_epochs = trainer.epochs
-            progress = (current_epoch / total_epochs) * 100
-	        
-            job = db.query(Job).filter(Job.id == job_id).first()
-            job.progress = progress
-            db.commit()
-        
-        # call back
-        model.add_callback("on_train_epoch_end", on_train_epoch_end) 
-
-        model.train(
-            data="datasets/exdark/yolo/exdark.yaml",
-            epochs=epochs,
-            batch=batch_size,
-            project=TRAIN_DIR,
-            name=f"job_{job_id}",
-            exist_ok=True
-        )
-
-        # update status (completed)
-        job = db.query(Job).filter(Job.id == job_id).first()
-        job.status = "completed"
-        job.progress = 100.0
-        db.commit()
-
-    except Exception as e:
-        # update status (failed)
-        job = db.query(Job).filter(Job.id == job_id).first()
-        job.status = "failed"
-        db.commit()
-        print(f"학습 실패: {e}")
-
-    finally:
-        db.close() 
+# Redis connect
+redis_client = redis.Redis(host=os.getenv("REDIS_HOST", "localhost"), port=6379, db=0, decode_responses=True)
     
 # Training task create
 @router.post("/jobs", response_model=JobResponse)
@@ -86,13 +32,8 @@ def create_job(job: JobCreate, db: Session=Depends(get_db), email: str=Depends(g
     db.commit()
     db.refresh(db_job)
 
-    # 백그라운드 학습 시작
-    from app.config import settings
-    thread = threading.Thread(
-        target=train_model,
-        args=(db_job.id, job.epochs, job.batch_size, settings.DATABASE_URL)
-    )
-    thread.start()
+    # celery task 실행
+    train_model_task.delay(db_job.id, job.epochs, job.batch_size)
 
     return db_job
 
@@ -109,3 +50,24 @@ def get_job(job_id: int, db: Session=Depends(get_db)):
     if not job:
         HTTPException(status_code=404, detail="작업을 찾을 수 없습니다.")
     return job
+
+# WebSocket endpoint
+@router.websocket("/ws/jobs/{job_id}")
+async def job_progress_websocket(websocket: WebSocket, job_id: int):
+    await websocket.accept()
+
+    pubsub = redis_client.pubsub()
+    pubsub.subscribe(f"job_{job_id}_progress")
+
+    try:
+        for message in pubsub.listen():
+            if message["type"] == "message":
+                data = json.loads(message["data"])
+                await websocket.send_json(data)
+
+                if data.get("status") in ["completed", "failed"]:
+                    break
+    except WebSocketDisconnect:
+        pass
+    finally:
+        pubsub.unsubscribe(f"job_{job_id}_progress")

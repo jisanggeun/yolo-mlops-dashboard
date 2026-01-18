@@ -6,6 +6,7 @@ sqlalchemy
 pymysql
 email-validator
 passlib[bcrypt]
+bcrypt==4.0.1
 cryptography
 python-jose[cryptography]
 python-multipart
@@ -14,3 +15,8 @@ pillow
 scikit-learn
 psutil
 gputil
+celery
+redis
+pyyaml
+aioredis
+websockets

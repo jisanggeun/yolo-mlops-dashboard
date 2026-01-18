@@ -6,8 +6,8 @@ services:
     image: mysql:8.0
     container_name: yolo-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: yolo_mlops
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3306:3306"
     volumes:
@@ -32,8 +32,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: mysql+pymysql://root:root@mysql:3306/yolo_mlops
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      DATASET_PATH: ${DATASET_PATH}
+      REDIS_HOST: ${REDIS_HOST}
     depends_on:
       mysql:
         condition: service_healthy
@@ -42,6 +45,32 @@ services:
     volumes:
       - ./backend/runs:/app/runs
       - ./backend/datasets:/app/datasets
+
+  # Celery worker
+  celery:
+    build: ./backend
+    container_name: yolo-celery
+    command: celery -A app.celery_app worker --loglevel=info
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      DATASET_PATH: ${DATASET_PATH}
+      REDIS_HOST: ${REDIS_HOST}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./backend/runs:/app/runs
+      - ./backend/datasets:/app/datasets
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   # Frontend
   frontend:

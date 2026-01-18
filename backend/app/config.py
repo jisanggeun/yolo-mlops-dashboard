@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str="TEST_SECRET_KEY" # JWT 비밀 키
     ALGORITHM: str="HS256" # Hash + SHA256 (JWT)
     ACCESS_TOKEN_EXPIRE_MINUTES: int=30 # Token 만료 시간 30분
+    DATASET_PATH: str=""
+    REDIS_HOST: str="localhost"
 
     class Config:
         env_file = ".env" # .env 파일에서 환경변수 가져 옴

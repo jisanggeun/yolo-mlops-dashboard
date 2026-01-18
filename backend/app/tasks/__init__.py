@@ -1,0 +1,1 @@
+from app.tasks.train import train_model_task
