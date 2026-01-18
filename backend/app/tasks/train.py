@@ -7,9 +7,14 @@ import os
 import yaml
 import redis
 import json
+import mlflow
+import mlflow.pytorch
 
 # Redis connect
 redis_client = redis.Redis(host=os.getenv("REDIS_HOST", "localhost"), port=6379, db=0, decode_responses=True)
+
+# MLflow setting
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
 
 # 학습 저장 경로 (backend/runs/train)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -110,6 +115,27 @@ def train_model_task(self, job_id: int, epochs: int, batch_size: int):
             exist_ok=True,
             workers=0
         )
+
+        # MLflow
+        results_dir = os.path.join(TRAIN_DIR, f"job_{job_id}")
+
+        with mlflow.start_run(run_name=f"job_{job_id}"):
+            # save parameter
+            mlflow.log_param("epochs", epochs)
+            mlflow.log_param("batch_size", batch_size)
+            mlflow.log_param("model", "yolov8n")
+            mlflow.log_param("dataset", "exdark")
+            
+            # save best.pt
+            model_path = os.path.join(results_dir, "weights", "best.pt")
+            if os.path.exists(model_path):
+                mlflow.log_artifact(model_path, "model")
+
+            # save last.pt
+            last_model_path = os.path.join(results_dir, "weights", "last.pt")
+            if os.path.exists(last_model_path):
+                mlflow.log_artifact(last_model_path, "model")
+
 
         # update status (completed)
         job = db.query(Job).filter(Job.id == job_id).first()

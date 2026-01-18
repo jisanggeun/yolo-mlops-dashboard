@@ -37,6 +37,10 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       DATASET_PATH: ${DATASET_PATH}
       REDIS_HOST: ${REDIS_HOST}
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     depends_on:
       mysql:
         condition: service_healthy
@@ -56,6 +60,10 @@ services:
       REDIS_URL: ${REDIS_URL}
       DATASET_PATH: ${DATASET_PATH}
       REDIS_HOST: ${REDIS_HOST}
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     depends_on:
       mysql:
         condition: service_healthy
@@ -81,5 +89,34 @@ services:
     depends_on:
       - backend
 
+  # MinIO (s3 호환 storage)
+  minio:
+    image: minio/minio
+    container_name: yolo-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+  
+  mlflow:
+    build: ./mlflow
+    container_name: yolo-mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+    command:
+      mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root s3://mlflow/
+    depends_on:
+      - minio
+
 volumes:
   mysql_data:
+  minio_data:
