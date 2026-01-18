@@ -7,6 +7,7 @@ backend/
 │   ├── main.py          # FastAPI APP 진입 포인트
 │   ├── config.py        # 환경 설정
 │   ├── database.py      # DB 연결
+│   ├── celery_app.py    # Celery 설정
 │   ├── api/
 │   │   ├── auth.py        # 인증 API
 │   │   ├── jobs.py        # 학습 API
@@ -20,7 +21,9 @@ backend/
 │   │   ├── job.py       # Job 스키마
 │   │   └── predict.py   # Predict 스키마
 │   └── services/
-│       └── auth.py      # 비밀번호 Hashing, JWT
+│   │   └── auth.py      # 비밀번호 Hashing, JWT
+│   └── tasks/
+│       └── train.py     # Celery 학습 작업
 ├── scripts/
 │   └── convert_exdark.py # YOLO 형식 변환 
 ├── requirements.txt
@@ -47,6 +50,7 @@ uvicorn app.main:app --reload
 | POST | /api/jobs | 학습 작업 생성 |
 | GET | /api/jobs | 학습 작업 목록 조회 |
 | GET | /api/jobs/{job_id} | 학습 작업 상세 조회 |
+| WS | /api/ws/jobs/{job_id} | 실시간 진행률 WebSocket |
 | POST | /api/predict | 이미지 예측 (YOLO) |
 | GET | /api/predict/models | 모델 목록 조회 |
 | GET | /api/predict/history | 예측 히스토리 조회 |

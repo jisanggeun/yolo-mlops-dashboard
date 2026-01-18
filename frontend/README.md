@@ -36,7 +36,7 @@ npm start
 | Home | / | 대시보드 홈 |
 | Register | /register | 회원가입 |
 | Login | /login | 로그인 |
-| Jobs | /jobs | 학습 작업 관리 (실시간 진행도) |
+| Jobs | /jobs | 학습 작업 관리 (WebSocket 실시간 진행도) |
 | Predict | /predict | 이미지 예측 (모델 선택, 히스토리) |
 | Monitor | /monitor | 시스템 모니터링 (CPU, Memory, GPU) |
 

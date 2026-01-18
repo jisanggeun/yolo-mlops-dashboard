@@ -43,6 +43,18 @@
 
 ---
 
+## ⚡ Features
+
+| Feature | Description |
+|---------|-------------|
+| 실시간 학습 진행률 | Redis Pub/Sub + WebSocket |
+| 비동기 학습 | Celery Worker |
+| GPU 지원 | Docker nvidia-container-toolkit |
+| JWT 인증 | Access Token + 자동 갱신 |
+| 모델 선택 | 학습된 모델로 예측 |
+
+---
+
 ## 📁 Structure
 ```
 dashboard/
@@ -95,5 +107,6 @@ npm start
 |---------|------|-------------|
 | frontend | 3000 | React 앱 |
 | backend | 8000 | FastAPI 서버 |
+| celery | - | 학습 작업 Worker (GPU) |
 | mysql | 3306 | 데이터베이스 |
-| redis | 6379 | 캐시/작업 큐 |
+| redis | 6379 | 작업 큐 / Pub/Sub |
