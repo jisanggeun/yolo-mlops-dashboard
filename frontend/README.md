@@ -24,7 +24,7 @@ frontend/
 └── package.json
 ```
 
-## 🚀 실행
+## 🚀 run
 ```bash
 npm install
 npm start
