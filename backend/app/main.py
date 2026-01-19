@@ -16,7 +16,7 @@ Instrumentator().instrument(app).expose(app)
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], # React 주소 (허용할 주소)
+    allow_origins=["http://localhost:3000", "http://localhost"], # React 주소 (허용할 주소)
     allow_credentials=True, # 쿠키/인증 허용
     allow_methods=["*"], # 모든 HTTP method 허용 (GET, POST ...)
     allow_headers=["*"], # 모든 헤더 허용 

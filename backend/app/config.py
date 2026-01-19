@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int=30 # Token 만료 시간 30분
     DATASET_PATH: str=""
     REDIS_HOST: str="localhost"
+    INFERENCE_SERVER_URL: str="http://localhost:8001"
 
     class Config:
         env_file = ".env" # .env 파일에서 환경변수 가져 옴

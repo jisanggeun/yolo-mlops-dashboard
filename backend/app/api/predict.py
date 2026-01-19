@@ -2,14 +2,31 @@ from fastapi import APIRouter, UploadFile, File, Depends, Query
 from fastapi.responses import FileResponse
 from app.schemas.predict import PredictResponse
 from app.services.auth import get_current_user
+from app.config import settings
 from ultralytics import YOLO
 from datetime import datetime
 from urllib.parse import unquote
 import shutil
 import os
 import json
+import httpx
 
 router = APIRouter()
+
+# Inference Server 호출 함수
+async def call_inference_server(file_path: str, filename: str):
+    # inference server에 추론 요청 (Jetson)
+    async with httpx.AsyncClient() as client:
+        with open(file_path, "rb") as f:
+            files = {
+                "file": (filename, f, "image/jpeg")
+            }
+            response = await client.post(
+                f"{settings.INFERENCE_SERVER_URL}/predict",
+                files=files,
+                timeout=30.0
+            )
+        return response.json()
 
 # Model load
 @router.get("/predict/models") 
@@ -34,6 +51,7 @@ async def get_models(email: str=Depends(get_current_user)):
 async def predict(
     file: UploadFile=File(...), 
     model_name: str=Query("pretrained"),
+    use_inference_server: bool=Query(False),
     email: str=Depends(get_current_user)
 ):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -43,7 +61,42 @@ async def predict(
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # select model
+    # Inference Server 사용 (Jetson TensorRT)
+    if use_inference_server:
+        try:
+            result = await call_inference_server(temp_path, file.filename)
+            predictions = result.get("detections", [])
+
+            # result 저장용 directory 생성
+            os.makedirs(f"runs/{timestamp}", exist_ok=True)
+
+            # original file 저장
+            original_path = f"runs/{timestamp}/{file.filename}"
+            shutil.copy(temp_path, original_path)
+
+            # temp file 삭제
+            os.remove(temp_path)
+
+            # 결과 JSON 저장
+            json_path = f"runs/{timestamp}/result.json"
+            with open(json_path, "w") as f:
+                json.dump({
+                    "filename": file.filename,
+                    "visualize_filename": None,
+                    "model": "tensorrt",
+                    "predictions": predictions
+                }, f)
+            
+            return {
+                "filename": file.filename,
+                "predictions": predictions,
+                "message": "예측 완료 (Inference Server)",
+                "image_path": None
+            }
+        except Exception as e:
+            print(f"Inference Server 오류: {e}, local inference로 전환")
+
+    # select model (local inference)
     if model_name == "pretrained":
         model_path = "yolov8n.pt"
     else:
