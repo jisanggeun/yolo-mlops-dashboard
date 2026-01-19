@@ -31,7 +31,7 @@ backend/
 └── README.md
 ```
 
-## 🚀 run
+## 🚀 Run
 ```bash
 python -m venv venv
 source venv/Scripts/activate  # Windows
