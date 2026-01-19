@@ -61,6 +61,7 @@
 dashboard/
 ├── backend/           # FastAPI 서버
 ├── frontend/          # React 앱
+├── inference/         # Inference Server (Jetson TensorRT)
 ├── mlflow/            # MLflow 설정
 ├── nginx/             # Nginx 설정
 ├── prometheus/        # Prometheus 설정
