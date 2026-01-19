@@ -63,6 +63,9 @@ dashboard/
 ├── frontend/          # React 앱
 ├── mlflow/            # MLflow 설정
 ├── nginx/             # Nginx 설정
+├── prometheus/        # Prometheus 설정
+├── grafana/           # Grafana 설정
+├── promtail/          # Promtail 설정
 ├── docker-compose.yml # Docker 설정
 ├── .env               # 환경 변수
 └── README.md
@@ -103,6 +106,8 @@ npm start
 | API Docs | http://localhost/docs |
 | MLflow | http://localhost:5001 |
 | MinIO Console | http://localhost:9001 |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3001 |
 
 ---
 
@@ -118,3 +123,7 @@ npm start
 | redis | 6379 | 작업 큐 / Pub/Sub |
 | mlflow | 5001 | 모델 버전 관리 |
 | minio | 9000/9001 | Artifact 저장소 |
+| prometheus | 9090 | Metric 수집 |
+| grafana | 3001 | 모니터링 대시보드 |
+| loki | 3100 | 로그 수집 |
+| promtail | - | 로그 전송 |
