@@ -9,9 +9,11 @@ class Settings(BaseSettings):
     DATASET_PATH: str=""
     REDIS_HOST: str="localhost"
     INFERENCE_SERVER_URL: str="http://localhost:8001"
+    MLFLOW_TRACKING_URI: str="http://localhost:5000"
 
     class Config:
         env_file = ".env" # .env 파일에서 환경변수 가져 옴
+        extra = "ignore"
 
 # 설정 객체 생성 (다른 파일에서 import해서 사용하기 때문)
 settings = Settings()

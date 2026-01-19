@@ -24,3 +24,5 @@ mlflow
 boto3
 prometheus-fastapi-instrumentator
 httpx
+pytest
+pytest-asyncio

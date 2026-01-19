@@ -39,13 +39,13 @@ def create_job(job: JobCreate, db: Session=Depends(get_db), email: str=Depends(g
 
 # Training task list look up
 @router.get("/jobs", response_model=list[JobResponse])
-def get_jobs(db: Session=Depends(get_db)):
+def get_jobs(email: str=Depends(get_current_user), db: Session=Depends(get_db)):
     jobs = db.query(Job).all()
     return jobs
 
 # Training task detail look up
 @router.get("/jobs/{job_id}", response_model=JobResponse)
-def get_job(job_id: int, db: Session=Depends(get_db)):
+def get_job(job_id: int, email: str=Depends(get_current_user), db: Session=Depends(get_db)):
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         HTTPException(status_code=404, detail="작업을 찾을 수 없습니다.")
