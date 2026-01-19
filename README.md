@@ -62,6 +62,7 @@ dashboard/
 ├── backend/           # FastAPI 서버
 ├── frontend/          # React 앱
 ├── mlflow/            # MLflow 설정
+├── nginx/             # Nginx 설정
 ├── docker-compose.yml # Docker 설정
 ├── .env               # 환경 변수
 └── README.md
@@ -98,9 +99,8 @@ npm start
 
 | Service | URL |
 |---------|-----|
-| Frontend | http://localhost:3000 |
-| Backend | http://localhost:8000 |
-| API Docs | http://localhost:8000/docs |
+| Frontend | http://localhost |
+| API Docs | http://localhost/docs |
 | MLflow | http://localhost:5001 |
 | MinIO Console | http://localhost:9001 |
 
@@ -110,6 +110,7 @@ npm start
 
 | Service | Port | Description |
 |---------|------|-------------|
+| nginx | 80 | 리버스 프록시 |
 | frontend | 3000 | React 앱 |
 | backend | 8000 | FastAPI 서버 |
 | celery | - | 학습 작업 Worker (GPU) |
