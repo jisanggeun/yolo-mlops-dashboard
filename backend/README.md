@@ -39,6 +39,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
+## 🧪 Test
+```bash
+pip install pytest pytest-asyncio
+pytest tests/ -v
+```
+
 ## 📡 API Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
