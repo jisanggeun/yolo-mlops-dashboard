@@ -22,3 +22,4 @@ aioredis
 websockets
 mlflow
 boto3
+prometheus-fastapi-instrumentator

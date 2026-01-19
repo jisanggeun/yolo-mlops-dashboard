@@ -3,11 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.models import user, job
 from app.api import auth, jobs, predict, monitor
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # table 생성
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="YOLO MLOps Dashboard")
+
+# Prometheus Metric 노출
+Instrumentator().instrument(app).expose(app)
 
 # CORS 설정
 app.add_middleware(
