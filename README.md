@@ -53,6 +53,7 @@
 | JWT 인증 | Access Token + 자동 갱신 |
 | 모델 선택 | 학습된 모델로 예측 |
 | 모델 버전 관리 | MLflow + MinIO |
+| Edge 추론 | Jetson Orin Nano + TensorRT |
 
 ---
 
@@ -128,3 +129,31 @@ npm start
 | grafana | 3001 | 모니터링 대시보드 |
 | loki | 3100 | 로그 수집 |
 | promtail | - | 로그 전송 |
+
+---
+
+## 🤖 Jetson Inference Server
+
+Jetson Orin Nano에서 TensorRT로 최적화된 추론을 수행하는 별도 서버
+
+### 설정
+
+**1. `.env`에 Jetson IP 추가:**
+```env
+INFERENCE_SERVER_URL=http://<JETSON_IP>:8001
+```
+
+**2. Jetson에서 Inference Server 실행:**
+```bash
+cd ~/inference
+docker build -t yolo-inference .
+docker run -d --runtime nvidia -p 8001:8001 --name yolo-inference yolo-inference
+```
+
+**3. Frontend에서 "Inference Server 사용 (Jetson TensorRT)" 체크**
+
+### 특징
+- 첫 실행 시 자동 TensorRT 변환 (5~10분)
+- 이후 빠른 추론 (40~50ms)
+- 시각화 이미지 포함 응답
+- 연결 실패 시 로컬 추론으로 자동 전환
