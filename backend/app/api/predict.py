@@ -16,17 +16,19 @@ router = APIRouter()
 # Inference Server 호출 함수
 async def call_inference_server(file_path: str, filename: str):
     # inference server에 추론 요청 (Jetson)
-    async with httpx.AsyncClient() as client:
-        with open(file_path, "rb") as f:
-            files = {
-                "file": (filename, f, "image/jpeg")
-            }
-            response = await client.post(
-                f"{settings.INFERENCE_SERVER_URL}/predict",
-                files=files,
-                timeout=30.0
-            )
-        return response.json()
+    try:
+        async with httpx.AsyncClient(timeout=180.0) as client:
+            with open(file_path, "rb") as f:
+                files = {
+                    "file": (filename, f, "image/jpeg")
+                }
+                response = await client.post(
+                    f"{settings.INFERENCE_SERVER_URL}/predict",
+                    files=files,
+                )
+            return response.json()
+    except Exception as e:
+        print(f"Inference Server 오류: {type(e).__name__}: {e}")
 
 # Model load
 @router.get("/predict/models") 
@@ -66,6 +68,7 @@ async def predict(
         try:
             result = await call_inference_server(temp_path, file.filename)
             predictions = result.get("detections", [])
+            image_base64 = result.get("image_base64", None)
 
             # result 저장용 directory 생성
             os.makedirs(f"runs/{timestamp}", exist_ok=True)
@@ -73,6 +76,16 @@ async def predict(
             # original file 저장
             original_path = f"runs/{timestamp}/{file.filename}"
             shutil.copy(temp_path, original_path)
+
+            # visualize image save (base64 -> file)
+            visualize_path = None
+            if image_base64:
+                import base64
+                visualize_filename = f"visualize_{file.filename}"
+                visualize_path = f"runs/{timestamp}/{visualize_filename}"
+                img_data = base64.b64decode(image_base64)
+                with open(visualize_path, "wb") as f:
+                    f.write(img_data)
 
             # temp file 삭제
             os.remove(temp_path)
@@ -82,7 +95,7 @@ async def predict(
             with open(json_path, "w") as f:
                 json.dump({
                     "filename": file.filename,
-                    "visualize_filename": None,
+                    "visualize_filename": visualize_filename if image_base64 else None,
                     "model": "tensorrt",
                     "predictions": predictions
                 }, f)
@@ -91,10 +104,10 @@ async def predict(
                 "filename": file.filename,
                 "predictions": predictions,
                 "message": "예측 완료 (Inference Server)",
-                "image_path": None
+                "image_path": f"/api/predict/image/{timestamp}/{visualize_filename}" if image_base64 else ""
             }
         except Exception as e:
-            print(f"Inference Server 오류: {e}, local inference로 전환")
+            print(f"Inference Server 오류: {type(e).__name__}: {e}, local inference로 전환")
 
     # select model (local inference)
     if model_name == "pretrained":
