@@ -14,14 +14,14 @@ export const getModels = async () => {
 }
 
 // Image Predict API 호출
-export const predict = async (file, modelName="pretrained") => {
+export const predict = async (file, modelName="pretrained", useInferenceServer=false) => {
     const token = localStorage.getItem("token");
     // 파일 전송을 위한 FormData
     const formData = new FormData();
     formData.append("file", file);
 
     const response = await axios.post(
-        `${API_URL}/predict?model_name=${modelName}`, 
+        `${API_URL}/predict?model_name=${modelName}&use_inference_server=${useInferenceServer}`, 
         formData, {
         headers: {
             Authorization: `Bearer ${token}`,

@@ -12,6 +12,7 @@ function Predict() {
     const [showHistoryImage, setShowHistoryImage] = useState(true);
     const [models, setModels] = useState([]);
     const [selectedModel, setSelectedModel] = useState("pretrained");
+    const [useInferenceServer, setUseInferenceServer] = useState(false);
 
     // page 로드 시 history, model 조회
     useEffect(() => {
@@ -54,7 +55,7 @@ function Predict() {
         }
 
         try {
-            const data = await predict(file);
+            const data = await predict(file, selectedModel, useInferenceServer);
             setResult(data);
             setMessage("예측 성공");
             setShowImage(false);
@@ -92,6 +93,20 @@ function Predict() {
                             ))}
                         </select>
                     </div>
+                    
+                    {/* Inference Server Option */}
+                    <div className="form-group" style={{ marginBottom: "20px" }}>
+                        <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                            <input 
+                                type="checkbox"
+                                checked={useInferenceServer}
+                                onChange={(e) => setUseInferenceServer(e.target.checked)}
+                                style={{ width: "20px", height: "20px" }}
+                            />
+                            Inference Server 사용 (Jetson TensorRT)
+                        </label>
+                    </div>
+
                     <div className="file-upload">
                         <p>📁 이미지를 선택하세요.</p>
                         <input 
@@ -106,13 +121,13 @@ function Predict() {
             </div>
 
             {result && (
-                <div classsName="card">
+                <div className="card">
                     <h2 className="card-title">예측 결과</h2>
                     <div className="result-card">
                         <p><strong>파일명:</strong> {result.filename}</p>
                         {result.predictions.map((pred, index) => (
                             <div key={index} className="result-item">
-                                <span>{pred.class}</span>
+                                <span>{pred.class_name || pred.class}</span>
                                 <span className="confidence">{(pred.confidence * 100).toFixed(1)}%</span>
                             </div>
                         ))}
@@ -163,10 +178,10 @@ function Predict() {
                         <div style={{ marginTop: "20px" }}>
                             <div className="result-card">
                                 <p><strong>파일명:</strong> {selectedHistory.filename}</p>
-                                <p><strong>모델:</strong> {selectedModel.model}</p>
+                                <p><strong>모델:</strong> {selectedHistory.model}</p>
                                 {selectedHistory.predictions.map((pred, index) => (
                                     <div key={index} className="result-item">
-                                        <span>{pred.class}</span>
+                                        <span>{pred.class_name || pred.class}</span>
                                         <span className="confidence">{(pred.confidence * 100).toFixed(1)}%</span>
                                     </div>
                                 ))}
